@@ -11,13 +11,22 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  callbacks: {
-    session: async ({ session, token }) => {
+  callbacks: { 
+    session: async ({ session, token }) => {  
       if (session?.user) {
         session.user.id = token.sub!
       }
-      return session
+      return session  
     },
+/**
+ * Adds the user's ID to the JWT token if a user is present.
+ *
+ * @param {Object} params - The parameter object.
+ * @param {Object} params.user - The user object, if available.
+ * @param {Object} params.token - The JWT token to be returned.
+ * @returns {Object} The updated JWT token with the user ID added if the user is present.
+ */
+
     jwt: async ({ user, token }) => {
       if (user) {
         token.uid = user.id
