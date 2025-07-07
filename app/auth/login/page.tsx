@@ -24,7 +24,6 @@ import { toast } from "sonner"
 import { z } from "zod"
 import { motion } from "framer-motion"
 
-
 const FormSchema = z.object({
   email: z
     .string()
@@ -38,7 +37,8 @@ const FormSchema = z.object({
   // }),
 })
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,14 +47,26 @@ export default function LoginPage() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsLoading(true)
+    try {
+      const result: any = await signIn("credentials", {
+        email: data?.email,
+        password: data?.password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        toast.error("Invalid email or password")
+      } else {
+        router.push("/dashboard")
+      }
+    } catch (error) {
+    console.log("🔍 ~ LoginPage ~ app/auth/login/page.tsx:65 ~ error:", error)
+      toast.error("An error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
