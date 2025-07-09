@@ -35,19 +35,20 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  theme         String    @default("blue")
+  id             String     @id @default(cuid())
+  name           String?
+  email          String     @unique
+  emailVerified  DateTime?
+  image          String?
+  theme          String     @default("blue")
   hashedPassword String?
-  accounts      Account[]
-  sessions      Session[]
-  expenses      Expense[]
-  categories    Category[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  isAdmin        Boolean?   @default(false)
+  accounts       Account[]
+  sessions       Session[]
+  expenses       Expense[]
+  categories     Category[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 }
 
 model VerificationToken {
