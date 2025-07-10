@@ -25,9 +25,10 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        if (!credentials) return null;
         try {
           const { email, password } = loginSchema.parse(credentials)
-          
+
           const user = await prisma.user.findUnique({
             where: { email }
           })
@@ -37,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           const isPasswordValid = await bcrypt.compare(password, user.hashedPassword)
-          
+
           if (!isPasswordValid) {
             return null
           }
@@ -53,12 +54,12 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
-  callbacks: { 
-    session: async ({ session, token }) => {  
+  callbacks: {
+    session: async ({ session, token }: { session: any, token: any }) => {
       if (session?.user) {
-        (session.user as any).id = token.sub!
+        (session.user).id = token.sub!
       }
-      return session  
+      return session
     },
     jwt: async ({ user, token }) => {
       if (user) {
