@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
-import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,10 +14,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Moon, Sun, User, Settings, LogOut, Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useThemeStore } from "@/hooks/use-theme-store"
 
 export function Navbar() {
   const { data: session } = useSession()
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useThemeStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen)
@@ -61,9 +61,13 @@ export function Navbar() {
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               className="h-9 w-9"
             >
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
+              {
+                theme === "dark" ? (
+                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                ) : (
+                  <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                )
+              }
             </Button>
 
             {session ? (

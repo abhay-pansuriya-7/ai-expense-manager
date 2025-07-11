@@ -1,7 +1,13 @@
 "use client"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import type { ComponentProps } from "react"
+import { useEffect } from "react"
+import { useThemeStore } from "@/hooks/use-theme-store"
 
 export function ThemeProvider({ children, ...props }: any) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+
+  const initializeTheme = useThemeStore((state) => state.initializeTheme)
+  useEffect(() => {
+    // Initialize theme when component mounts
+    initializeTheme()
+  }, [initializeTheme])
+  return <div {...props}>{children}</div>
 }

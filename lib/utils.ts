@@ -40,3 +40,5 @@ export const themes = [
   { name: "Slate", value: "slate", color: "bg-slate-500" },
   { name: "Rose", value: "rose", color: "bg-rose-500" },
 ]
+
+export type ThemeKey = "blue" | "emerald" | "violet" | "slate" | "rose";

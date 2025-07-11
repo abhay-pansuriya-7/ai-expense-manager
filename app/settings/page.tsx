@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
@@ -9,10 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useThemeStore } from "@/hooks/use-theme-store"
-import { themes } from "@/lib/utils"
+import { ThemeKey, themes } from "@/lib/utils"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
+
 
 export default function SettingsPage() {
   const { data: session } = useSession()
@@ -20,15 +21,17 @@ export default function SettingsPage() {
   const { colorTheme, setColorTheme } = useThemeStore()
   const [selectedTheme, setSelectedTheme] = useState(colorTheme)
 
+
   if (!session) {
     router.push("/auth/login")
     return null
   }
 
-  const handleThemeChange = (theme: string) => {
+  const handleThemeChange = (theme: ThemeKey) => {
     setSelectedTheme(theme)
     setColorTheme(theme)
     toast.success(`Theme changed to ${theme}`)
+    // Here you could save the theme preference to database for the user
   }
 
   return (
@@ -62,7 +65,7 @@ export default function SettingsPage() {
                           className={`h-20 w-full flex flex-col items-center justify-center gap-2 relative ${
                             selectedTheme === theme.value ? "ring-2 ring-primary" : ""
                           }`}
-                          onClick={() => handleThemeChange(theme.value)}
+                          onClick={() => handleThemeChange(theme.value as ThemeKey)}
                         >
                           <div className={`w-6 h-6 rounded-full ${theme.color}`} />
                           <span className="text-xs font-medium">{theme.name}</span>
