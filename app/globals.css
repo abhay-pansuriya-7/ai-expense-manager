@@ -180,7 +180,6 @@
   }
 
 
-  
 }
 
 @layer base {
@@ -240,4 +239,24 @@
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out;
+}
+
+.bg-blue-500 {
+  background-color: hsl(221.2, 83.2%, 53.3%);
+}
+
+.bg-emerald-500 {
+  background-color: hsl(145.0, 57.1%, 38.2%);
+}
+
+.bg-violet-500 {
+  background-color: hsl(271.0, 94.0%, 67.0%);
+}
+
+.bg-slate-500 {
+  background-color: hsl(210.0, 20.0%, 42.0%);
+}
+
+.bg-rose-500 {
+  background-color: hsl(346.0, 82.0%, 60.0%);
 }

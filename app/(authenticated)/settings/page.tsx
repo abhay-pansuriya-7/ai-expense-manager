@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -35,12 +33,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="max-w-2xl mx-auto">
+    <main className="flex-1 container mx-auto px-4 py-8">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <div className="min-h-screen bg-gradient-to-br from-primary/10 to-primary/30 dark:from-primary/5 dark:to-primary/20">
+          <div className="container mx-auto px-4 pb-20 pt-4 max-w-7xl">
             <div className="mb-8">
               <h1 className="text-3xl font-bold">Settings</h1>
               <p className="text-muted-foreground mt-1">Customize your ExpenseTracker experience</p>
@@ -62,9 +58,8 @@ export default function SettingsPage() {
                       <motion.div key={theme.value} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Button
                           variant="outline"
-                          className={`h-20 w-full flex flex-col items-center justify-center gap-2 relative ${
-                            selectedTheme === theme.value ? "ring-2 ring-primary" : ""
-                          }`}
+                          className={`h-20 w-full flex flex-col items-center justify-center gap-2 relative ${selectedTheme === theme.value ? "ring-2 ring-primary" : ""
+                            }`}
                           onClick={() => handleThemeChange(theme.value as ThemeKey)}
                         >
                           <div className={`w-6 h-6 rounded-full ${theme.color}`} />
@@ -107,10 +102,8 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
           </div>
-        </motion.div>
-      </main>
-
-      <Footer />
-    </div>
+        </div>
+      </motion.div>
+    </main>
   )
 }

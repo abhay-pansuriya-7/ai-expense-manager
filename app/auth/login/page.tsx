@@ -4,15 +4,7 @@ import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -62,7 +54,7 @@ export default function LoginPage() {
         router.push("/dashboard")
       }
     } catch (error) {
-    console.log("🔍 ~ LoginPage ~ app/auth/login/page.tsx:65 ~ error:", error)
+      console.log("🔍 ~ LoginPage ~ app/auth/login/page.tsx:65 ~ error:", error)
       toast.error("An error occurred. Please try again.")
     } finally {
       setIsLoading(false)

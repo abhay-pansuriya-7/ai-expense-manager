@@ -54,7 +54,7 @@ const budgetData = [
 
 export function Dashboard() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-2 sm:px-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -68,7 +68,7 @@ export function Dashboard() {
       </div>
 
       {/* Balance Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">

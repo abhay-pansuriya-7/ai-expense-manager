@@ -1,27 +1,16 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Moon, Sun, User, Settings, LogOut, Menu, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 import { useThemeStore } from "@/hooks/use-theme-store"
 
 export function Navbar() {
   const { data: session } = useSession()
   const { theme, setTheme } = useThemeStore()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen)
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -37,20 +26,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            {session && (
-              <>
-                <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-                  Dashboard
-                </Link>
-                <Link href="/expenses" className="text-sm font-medium hover:text-primary transition-colors">
-                  Expenses
-                </Link>
-                <Link href="/analytics" className="text-sm font-medium hover:text-primary transition-colors">
-                  Analytics
-                </Link>
-              </>
-            )}
-          </div>
+            {session && (<></>)}</div>
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
@@ -114,60 +90,28 @@ export function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                {/* Mobile Menu Button */}
-                <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMobileMenu}>
-                  {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                </Button>
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" asChild>
-                  <Link href="/auth/login">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/auth/signup">Sign Up</Link>
-                </Button>
+                <div className="hidden md:flex items-center space-x-2">
+                  <Button variant="ghost" asChild>
+                    <Link href="/auth/login">Sign In</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="/auth/signup">Sign Up</Link>
+                  </Button>
+                </div>
+                <div className="md:hidden">
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href="/auth/login">
+                      <User className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && session && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t"
-            >
-              <div className="py-4 space-y-2">
-                <Link
-                  href="/dashboard"
-                  className="block px-4 py-2 text-sm font-medium hover:bg-accent rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/expenses"
-                  className="block px-4 py-2 text-sm font-medium hover:bg-accent rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Expenses
-                </Link>
-                <Link
-                  href="/analytics"
-                  className="block px-4 py-2 text-sm font-medium hover:bg-accent rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Analytics
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </nav>
   )
