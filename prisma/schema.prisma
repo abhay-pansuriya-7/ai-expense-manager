@@ -35,20 +35,22 @@ model Session {
 }
 
 model User {
-  id             String     @id @default(cuid())
+  id             String          @id @default(cuid())
   name           String?
-  email          String     @unique
+  email          String          @unique
   emailVerified  DateTime?
   image          String?
-  theme          String     @default("blue")
+  theme          String          @default("blue")
   hashedPassword String?
-  isAdmin        Boolean?   @default(false)
+  isAdmin        Boolean?        @default(false)
   accounts       Account[]
   sessions       Session[]
-  expenses       Expense[]
+  userAccounts   UserAccount[]
+  transactions   Transaction[]
+  recurringItems RecurringItem[]
   categories     Category[]
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model VerificationToken {
@@ -59,28 +61,162 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Expense {
-  id          String   @id @default(cuid())
-  title       String
-  amount      Float
-  description String?
-  category    String
-  date        DateTime
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+enum AccountType {
+  PERSONAL
+  BUSINESS
+  SAVINGS
+  INVESTMENT
+}
+
+model UserAccount {
+  id               String           @id @default(uuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id])
+  name             String
+  type             AccountType      @default(PERSONAL)
+  balance          Decimal          @default(0)
+  currency         String           @default("USD")
+  isActive         Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  subAccounts      SubUserAccount[]
+  transactionsFrom Transaction[]    @relation("TransactionsFrom")
+  transactionsTo   Transaction[]    @relation("TransactionsTo")
+  recurringItems   RecurringItem[]
+
+  @@index([userId])
+}
+
+model SubUserAccount {
+  id            String          @id @default(uuid())
+  userAccountId String
+  userAccount   UserAccount     @relation(fields: [userAccountId], references: [id])
+  name          String
+  balance       Decimal         @default(0)
+  description   String?
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  transactions  Transaction[]
+  recurringItems RecurringItem[]
+
+  @@index([userAccountId])
+}
+
+model Transaction {
+  id              String          @id @default(uuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  amount          Decimal
+  description     String?
+  date            DateTime        @default(now())
+  type            TransactionType
+  categoryId      String?
+  category        Category?       @relation(fields: [categoryId], references: [id])
+  fromAccountId   String?
+  fromAccount     UserAccount?    @relation("TransactionsFrom", fields: [fromAccountId], references: [id])
+  toAccountId     String?
+  toAccount       UserAccount?    @relation("TransactionsTo", fields: [toAccountId], references: [id])
+  subAccountId    String?
+  subAccount      SubUserAccount? @relation(fields: [subAccountId], references: [id])
+  isRecurring     Boolean         @default(false)
+  recurringItemId String?
+  recurringItem   RecurringItem?  @relation(fields: [recurringItemId], references: [id])
+  isReviewed      Boolean         @default(false)
+  notes           String?
+  attachments     Attachment[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  bankSyncId      String?         @unique // For future bank sync integration
+  metadata        Json? // For additional future-proof data
 
   @@index([userId])
   @@index([date])
+  @@index([categoryId])
+  @@index([fromAccountId])
+  @@index([toAccountId])
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
+}
+
+model RecurringItem {
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  name           String
+  amount         Decimal
+  type           RecurringType
+  categoryId     String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  accountId      String?
+  userAccount    UserAccount?    @relation(fields: [accountId], references: [id])
+  subAccountId   String?
+  subUserAccount SubUserAccount? @relation(fields: [subAccountId], references: [id])
+  frequency      Frequency
+  interval       Int             @default(1)
+  startDate      DateTime
+  endDate        DateTime?
+  lastRun        DateTime?
+  nextRun        DateTime
+  isActive       Boolean         @default(true)
+  transactions   Transaction[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([nextRun])
+}
+
+enum RecurringType {
+  EXPENSE
+  INCOME
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model Attachment {
+  id            String      @id @default(uuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  url           String
+  type          String // e.g., 'receipt', 'invoice'
+  name          String
+  size          Int
+  createdAt     DateTime    @default(now())
+
+  @@index([transactionId])
 }
 
 model Category {
-  id     String @id @default(cuid())
-  name   String
-  color  String @default("#3b82f6")
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  name           String
+  type           CategoryType    @default(EXPENSE)
+  color          String?
+  icon           String?
+  parentId       String?
+  parent         Category?       @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       Category[]      @relation("CategoryHierarchy")
+  transactions   Transaction[]
+  recurringItems RecurringItem[]
 
-  @@unique([name, userId])
+  @@index([userId])
+}
+
+enum CategoryType {
+  EXPENSE
+  INCOME
+  TRANSFER
 }
