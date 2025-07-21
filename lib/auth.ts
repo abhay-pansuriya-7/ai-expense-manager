@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import { CreateUserDefaultAccount } from "@/graphql/services/UserAccounts";
 import z from "zod";
 import bcrypt from "bcryptjs";
 
@@ -10,13 +11,21 @@ import bcrypt from "bcryptjs";
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-})
+});
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
     CredentialsProvider({
       name: "credentials",
@@ -29,9 +38,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const { email, password } = loginSchema.parse(credentials)
 
-          const user = await prisma.user.findUnique({
-            where: { email }
-          })
+          const user = await prisma.user.findUnique({ where: { email } })
 
           if (!user || !user.hashedPassword) {
             return null
@@ -39,15 +46,9 @@ export const authOptions: NextAuthOptions = {
 
           const isPasswordValid = await bcrypt.compare(password, user.hashedPassword)
 
-          if (!isPasswordValid) {
-            return null
-          }
+          if (!isPasswordValid) { return null }
 
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-          }
+          return { id: user.id, email: user.email, name: user.name, }
         } catch (error) {
           return null
         }
@@ -66,6 +67,17 @@ export const authOptions: NextAuthOptions = {
         token.uid = user.id
       }
       return token
+    },
+  },
+  events: {
+    createUser: async ({ user }) => {
+      // This runs when a new user is created via OAuth (like Google)
+      try {
+        await CreateUserDefaultAccount(user.id, "PERSONAL");
+        console.log(`Default account created for user: ${user.id}`);
+      } catch (error) {
+        console.error(`Failed to create default account for user ${user.id}:`, error);
+      }
     },
   },
   session: {

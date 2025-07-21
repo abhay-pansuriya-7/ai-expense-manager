@@ -61,7 +61,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-
 enum AccountType {
   PERSONAL
   BUSINESS
@@ -73,10 +72,8 @@ model UserAccount {
   id               String           @id @default(uuid())
   userId           String
   user             User             @relation(fields: [userId], references: [id])
-  name             String
   type             AccountType      @default(PERSONAL)
-  balance          Decimal          @default(0)
-  currency         String           @default("USD")
+  currency         String           @default("INR")
   isActive         Boolean          @default(true)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
@@ -89,16 +86,16 @@ model UserAccount {
 }
 
 model SubUserAccount {
-  id            String          @id @default(uuid())
-  userAccountId String
-  userAccount   UserAccount     @relation(fields: [userAccountId], references: [id])
-  name          String
-  balance       Decimal         @default(0)
-  description   String?
-  isActive      Boolean         @default(true)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  transactions  Transaction[]
+  id             String          @id @default(uuid())
+  userAccountId  String
+  userAccount    UserAccount     @relation(fields: [userAccountId], references: [id])
+  name           String
+  balance        Decimal         @default(0)
+  description    String?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  transactions   Transaction[]
   recurringItems RecurringItem[]
 
   @@index([userAccountId])
