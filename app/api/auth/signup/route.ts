@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
+import { CreateUserDefaultAccount } from "@/graphql/services/UserAccounts"
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { name, email, password } = signupSchema.parse(body)
-    
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email }
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
         hashedPassword,
       },
     })
+
+    await CreateUserDefaultAccount(user.id, "PERSONAL")
 
     return NextResponse.json(
       { message: "User created successfully", userId: user.id },

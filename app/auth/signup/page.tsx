@@ -176,11 +176,7 @@ export default function SignUpPage() {
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               disabled={isLoading}
             >
-              {isLoading ? (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Icons.google className="mr-2 h-4 w-4" />
-              )}
+              <Icons.google className="mr-2 h-4 w-4" />
               Continue with Google
             </Button>
 

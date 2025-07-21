@@ -6,6 +6,7 @@ import { AddExpenseModal } from "@/components/add-expense-modal"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 export default function Home() {
   const [showAddModal, setShowAddModal] = useState(false)
@@ -18,13 +19,15 @@ export default function Home() {
             <Dashboard />
           </div>
           {/* Floating Action Button */}
-          <Button
-            onClick={() => setShowAddModal(true)}
-            className="fixed bottom-24 right-4 sm:right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg z-50 md:bottom-6"
-            size="icon"
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
+          <Link href="/transactions/add">
+            <Button
+              // onClick={() => setShowAddModal(true)}
+              className="fixed bottom-24 right-4 sm:right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg z-50 md:bottom-6"
+              size="icon"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </Link>
 
           <AddExpenseModal open={showAddModal} onOpenChange={setShowAddModal} />
         </div>
