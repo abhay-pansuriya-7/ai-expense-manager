@@ -1,5 +1,6 @@
-import  User  from './User';
-// import { ProductTypeDefs } from './Product';
+import User from './User';
+import Category from './Category';
+
 
 // Base schema that includes shared types, enums, interfaces, etc.
 const baseTypeDefs = `
@@ -15,5 +16,5 @@ const baseTypeDefs = `
 export const typeDefs = [
   baseTypeDefs,
   User,
-//   ProductTypeDefs
+  Category,
 ];

@@ -9,9 +9,7 @@ const UserSchema = `
 
   type CommonResponse {
     status: Boolean!
-    message: String!
-    data: User
-    token: String
+    message: String!    
   }
 
 
@@ -33,7 +31,7 @@ const UserSchema = `
 
   type Mutation {    
     updateUser(id: String!, input: UserInput): User
-    deleteUser(id: String!): User
+    deleteUser(id: String!): CommonResponse
   }
 `;
 

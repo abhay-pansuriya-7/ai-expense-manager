@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "foreignKeys"
 }
 
 model Account {
@@ -202,8 +203,10 @@ model Category {
   name           String
   type           CategoryType    @default(EXPENSE)
   color          String?
+  description    String?
   icon           String?
   parentId       String?
+  expenseLimit   Float?
   parent         Category?       @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children       Category[]      @relation("CategoryHierarchy")
   transactions   Transaction[]
