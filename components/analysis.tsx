@@ -11,8 +11,9 @@ import { CategoryTable } from "@/components/category-table"
 import { AccountSummary } from "@/components/account-summary"
 import { CashFlowSummary } from "@/components/cash-flow-summary"
 import { Calendar, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight } from "lucide-react"
-
+import { useThemeStore } from "@/hooks/use-theme-store"
 export function Analysis() {
+  const { theme } = useThemeStore()
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -35,31 +36,31 @@ export function Analysis() {
       </div>
 
       {/* Account Summary */}
-      <AccountSummary />
+      <AccountSummary theme={theme} />
 
       {/* General Balance Card */}
-      <Card className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+      <Card className={theme === "light" ? "text-black" : "text-white"}>
         <CardContent className="p-6 text-center">
-          <p className="text-emerald-100 text-sm mb-2">General Balance</p>
+          <p className=" text-sm mb-2">General Balance</p>
           <p className="text-4xl font-bold mb-4">+$4,000</p>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/10 rounded-lg p-3">
+            <div className="bg-slate-500/10 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <ArrowUpRight className="h-4 w-4 text-green-300" />
-                <span className="text-sm text-emerald-100">Income</span>
+                <ArrowUpRight className="h-4 w-4 text-green-600" />
+                <span className="text-sm ">Income</span>
               </div>
               <p className="text-xl font-bold">$6,000</p>
-              <p className="text-xs text-emerald-200">4 Transactions</p>
+              <p className="text-xs text-emerald-600">4 Transactions</p>
             </div>
 
-            <div className="bg-white/10 rounded-lg p-3">
+            <div className="bg-slate-500/10 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <ArrowDownRight className="h-4 w-4 text-red-300" />
-                <span className="text-sm text-emerald-100">Expenses</span>
+                <ArrowDownRight className="h-4 w-4 text-red-600" />
+                <span className="text-sm ">Expenses</span>
               </div>
               <p className="text-xl font-bold">$2,000</p>
-              <p className="text-xs text-emerald-200">4 Transactions</p>
+              <p className="text-xs text-emerald-600">4 Transactions</p>
             </div>
           </div>
         </CardContent>

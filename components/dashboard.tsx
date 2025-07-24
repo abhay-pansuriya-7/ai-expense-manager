@@ -6,23 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ExpenseChart } from "@/components/expense-chart"
 import { ExpenseList } from "@/components/expense-list"
-import {
-  Home,
-  ShoppingBag,
-  Car,
-  Utensils,
-  Plane,
-  Heart,
-  Dumbbell,
-  Baby,
-  Gamepad2,
-  Shirt,
-  TrendingUp,
-  TrendingDown,
-  Wallet,
-  Calendar,
-} from "lucide-react"
-
+import { Home, ShoppingBag, Car, Utensils, Plane, Heart, Dumbbell, Baby, Gamepad2, Shirt, TrendingUp, TrendingDown, Wallet, Calendar, } from "lucide-react"
+import { useThemeStore } from "@/hooks/use-theme-store"
 const categoryIcons = {
   home: Home,
   shopping: ShoppingBag,
@@ -53,6 +38,9 @@ const budgetData = [
 ]
 
 export function Dashboard() {
+
+  const { theme } = useThemeStore()
+
   return (
     <div className="space-y-6 px-2 sm:px-4">
       {/* Header */}
@@ -69,52 +57,52 @@ export function Dashboard() {
 
       {/* Balance Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+        <Card className={theme === "light" ? "text-black" : "text-white"}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100 text-sm">Balance</p>
+                <p className="text-sm">Balance</p>
                 <p className="text-2xl font-bold">${summaryData.totalBalance.toLocaleString()}</p>
               </div>
-              <Wallet className="h-8 w-8 text-green-200" />
+              <Wallet className="h-8 w-8 text-green-200" color="#16a34a" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+        <Card className={theme === "light" ? "text-black" : "text-white"}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm">Income</p>
+                <p className="text-sm">Income</p>
                 <p className="text-2xl font-bold">${summaryData.monthlyIncome.toLocaleString()}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-blue-200" />
+              <TrendingUp className="h-8 w-8" color="#2563eb" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+        <Card className={theme === "light" ? "text-black" : "text-white"}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-red-100 text-sm">Expenses</p>
+                <p className="text-sm">Expenses</p>
                 <p className="text-2xl font-bold">${summaryData.monthlyExpenses.toLocaleString()}</p>
               </div>
-              <TrendingDown className="h-8 w-8 text-red-200" />
+              <TrendingDown className="h-8 w-8" color="#dc2626" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+        <Card className={theme === "light" ? "text-black" : "text-white"}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-100 text-sm">Saved</p>
+                <p className=" text-sm">Saved</p>
                 <p className="text-2xl font-bold">
                   ${(summaryData.monthlyIncome - summaryData.monthlyExpenses).toLocaleString()}
                 </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-purple-200" />
+              <TrendingUp className="h-8 w-8" color="#9333ea" />
             </div>
           </CardContent>
         </Card>
