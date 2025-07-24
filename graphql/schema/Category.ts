@@ -25,10 +25,18 @@ input CategoryInput {
     expenseLimit: Float
 }
 
+type PaginationInfo {
+    page: Int!
+    limit: Int!
+    total: Int!
+    totalPages: Int!
+}
+
 type CategoryResponse {
     status: Boolean!
     message: String!
     data: [Category]
+    pagination: PaginationInfo
 }
 
 type SingleCategoryResponse{
@@ -38,7 +46,14 @@ type SingleCategoryResponse{
 }
 
 type Query {
-    getAllCategories: CategoryResponse
+    getAllCategories(
+        page: Int = 1
+        limit: Int = 10
+        search: String
+        sortBy: String = "name"
+        sortOrder: String = "asc"
+        type: CategoryType
+    ): CategoryResponse
     getCategory(id: String!): SingleCategoryResponse
 }
 

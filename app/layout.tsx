@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
+import { ApolloProvider } from "@/components/apollo-provider"
 import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -20,8 +21,10 @@ const RootLayout = async ({ children, }: { children: React.ReactNode }) => {
         {/* Updated ThemeProvider with proper attributes */}
         <ThemeProvider>
           <AuthProvider>
-            {children}
-            <Toaster />
+            <ApolloProvider>
+              {children}
+              <Toaster />
+            </ApolloProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

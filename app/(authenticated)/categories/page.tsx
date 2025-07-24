@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { motion } from "framer-motion"
 import { Plus, Search, Edit, Trash2, DollarSign, TrendingUp } from "lucide-react"
 import * as Icons from "lucide-react"
@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { CategoryForm } from "@/components/category-form"
+import { useQuery } from "@apollo/client"
+import { GET_ALL_CATEGORIES } from "./gql"
+import Loading from "@/components/Loading"
 
 // Mock data
 const mockExpenseCategories = [
@@ -37,9 +40,23 @@ const renderIcon = (iconName: string, size = 20) => {
 
 export default function CategoriesPage() {
     const [searchTerm, setSearchTerm] = useState("")
-    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [selectedCategory, setSelectedCategory] = useState("expense")
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
     const [activeTab, setActiveTab] = useState("expense")
+
+    const { loading, error, data } = useQuery(GET_ALL_CATEGORIES, {
+        variables: {
+            page: 1,
+            limit: 10,
+            search: "",
+            sortBy: "name",
+            sortOrder: "asc",
+            type: selectedCategory === "expense" ? "EXPENSE" : "INCOME"
+        },
+        nextFetchPolicy: "cache-first"
+    });
+
+    const categories = useMemo(() => { return data?.getAllCategories?.data || [] }, [data])
 
     const filteredExpenseCategories = mockExpenseCategories.filter((category) =>
         category.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -156,7 +173,7 @@ export default function CategoriesPage() {
                                 </div>
                                 <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <Button onClick={() => setSelectedCategory(null)}>
+                                        <Button onClick={() => setSelectedCategory("expense")}>
                                             <Plus className="h-4 w-4 mr-2" />
                                             Add Category
                                         </Button>
@@ -170,7 +187,7 @@ export default function CategoriesPage() {
                                             type={activeTab}
                                             onClose={() => {
                                                 setIsAddDialogOpen(false)
-                                                setSelectedCategory(null)
+                                                setSelectedCategory("expense")
                                             }}
                                         />
                                     </DialogContent>
@@ -203,11 +220,11 @@ export default function CategoriesPage() {
 
                                 <TabsContent value="expense" className="mt-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {filteredExpenseCategories.map((category) => (
+                                        {categories.map((category: any) => (
                                             <CategoryCard key={category.id} category={category} type="expense" />
                                         ))}
                                     </div>
-                                    {filteredExpenseCategories.length === 0 && (
+                                    {loading ? <Loading /> : categories.length === 0 && (
                                         <div className="text-center py-12">
                                             <p className="text-muted-foreground">No expense categories found.</p>
                                         </div>
@@ -216,11 +233,11 @@ export default function CategoriesPage() {
 
                                 <TabsContent value="income" className="mt-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {filteredIncomeCategories.map((category) => (
+                                        {categories.map((category: any) => (
                                             <CategoryCard key={category.id} category={category} type="income" />
                                         ))}
                                     </div>
-                                    {filteredIncomeCategories.length === 0 && (
+                                    {loading ? <Loading /> : categories.length === 0 && (
                                         <div className="text-center py-12">
                                             <p className="text-muted-foreground">No income categories found.</p>
                                         </div>

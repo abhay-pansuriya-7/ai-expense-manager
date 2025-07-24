@@ -20,21 +20,16 @@ const transactionTypeOptions = [
 const allIcons = Object.values(iconCategories).flat()
 
 interface CategoryFormProps {
-  category?: {
-    name?: string
-    color?: string
-    icon?: string
-    limit?: number | string
-  } | null
+  category?: any
+  onClose: () => void,
   type: string
-  onClose: () => void
 }
 
-export function CategoryForm({ category, onClose }: CategoryFormProps) {
+export function CategoryForm({ category, onClose, type }: CategoryFormProps) {
 
   const [formData, setFormData] = useState({
     name: category?.name || "",
-    type: "expense",
+    type: type,
     color: category?.color || "#FF6B6B",
     icon: category?.icon || "UtensilsCrossed",
     limit: category?.limit || "",
