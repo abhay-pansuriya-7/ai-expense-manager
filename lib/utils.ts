@@ -34,11 +34,11 @@ export const expenseCategories = [
 ]
 
 export const themes = [
-  { name: "Blue", value: "blue", color: "bg-blue-500" },
-  { name: "Emerald", value: "emerald", color: "bg-emerald-500" },
-  { name: "Violet", value: "violet", color: "bg-violet-500" },
-  { name: "Slate", value: "slate", color: "bg-slate-500" },
-  { name: "Rose", value: "rose", color: "bg-rose-500" },
+  { name: "Blue", value: "blue", color: "bg-blue-500", hexValue: "#3B82F6" },
+  { name: "Emerald", value: "emerald", color: "bg-emerald-500", hexValue: "#10B981" },
+  { name: "Violet", value: "violet", color: "bg-violet-500", hexValue: "#8B5CF6" },
+  { name: "Slate", value: "slate", color: "bg-slate-500", hexValue: "#64748B" },
+  { name: "Rose", value: "rose", color: "bg-rose-500", hexValue: "#F43F5E" },
 ]
 
 export type ThemeKey = "blue" | "emerald" | "violet" | "slate" | "rose";
