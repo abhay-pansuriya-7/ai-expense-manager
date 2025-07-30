@@ -35,7 +35,7 @@ const CategoriesPage = () => {
             sortOrder: "asc",
             ...(category !== "ALL" && { type: category })
         },
-        nextFetchPolicy: "cache-first"
+        nextFetchPolicy: "cache-and-network"
     });
 
     const categories = useMemo(() => { return data?.getAllCategories?.data || [] }, [data])
