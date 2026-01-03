@@ -1,8 +1,11 @@
 import type React from "react"
-import { Loader2 } from "lucide-react"
+import { Loader2, AlertCircle, Eye, EyeOff } from "lucide-react"
 
 export const Icons = {
   spinner: Loader2,
+  alertCircle: AlertCircle,
+  eye: Eye,
+  eyeOff: EyeOff,
   google: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" {...props}>
       <path

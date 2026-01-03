@@ -6,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -45,7 +46,7 @@ const FormSchema = z.object({
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [error, setError] = useState<string | null>(null)
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -58,6 +59,7 @@ export default function SignUpPage() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true)
+    setError(null) // Clear any previous errors
     try {
       const response: any = await fetch("/api/auth/signup", {
         method: "POST",
@@ -73,6 +75,7 @@ export default function SignUpPage() {
         throw new Error(responseData.error || "Something went wrong")
       }
       toast.success("Account created successfully")
+      setError(null)
       redirect("/auth/login?message=Account created successfully", RedirectType.push)
     } catch (error) {
       setError(error instanceof Error ? error.message : "An error occurred")
@@ -80,6 +83,13 @@ export default function SignUpPage() {
       setIsLoading(false)
     }
 
+  }
+
+  // Clear error when user starts typing
+  const handleInputChange = () => {
+    if (error) {
+      setError(null)
+    }
   }
 
 
@@ -104,7 +114,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="username" {...field} />
+                        <Input placeholder="username" {...field} onChange={(e) => { field.onChange(e); handleInputChange(); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -117,7 +127,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="email" {...field} />
+                        <Input type="email" placeholder="email" {...field} onChange={(e) => { field.onChange(e); handleInputChange(); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -130,7 +140,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="password" {...field} />
+                        <Input type="password" placeholder="password" {...field} onChange={(e) => { field.onChange(e); handleInputChange(); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -143,7 +153,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="confirm password" {...field} />
+                        <Input type="password" placeholder="confirm password" {...field} onChange={(e) => { field.onChange(e); handleInputChange(); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,6 +167,23 @@ export default function SignUpPage() {
                 </Button>
               </form>
             </Form>
+
+            {/* Error Display */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+                  <Icons.alertCircle className="h-4 w-4" />
+                  <AlertDescription className="ml-2">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              </motion.div>
+            )}
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

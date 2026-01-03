@@ -8,6 +8,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -29,7 +30,10 @@ const FormSchema = z.object({
   // }),
 })
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -39,8 +43,11 @@ export default function LoginPage() {
     },
   })
 
+  const isAnyLoading = isSubmitLoading || isGoogleLoading;
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    setIsLoading(true)
+    setIsSubmitLoading(true)
+    setError(null) // Clear any previous errors
     try {
       const result: any = await signIn("credentials", {
         email: data?.email,
@@ -49,15 +56,33 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        toast.error("Invalid email or password")
+        setError("Email or password is incorrect")
       } else {
+        setError(null)
         router.push("/dashboard")
       }
     } catch (error) {
       console.log("🔍 ~ LoginPage ~ app/auth/login/page.tsx:65 ~ error:", error)
-      toast.error("An error occurred. Please try again.")
+      setError("An error occurred. Please try again.")
     } finally {
-      setIsLoading(false)
+      setIsSubmitLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    } catch (error) {
+      console.log("🔍 ~ handleGoogleSignIn ~ error:", error);
+      setIsGoogleLoading(false);
+    }
+  }
+
+  // Clear error when user starts typing
+  const handleInputChange = () => {
+    if (error) {
+      setError(null)
     }
   }
 
@@ -82,7 +107,7 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="email" {...field} />
+                        <Input placeholder="email" {...field} onChange={(e) => { field.onChange(e); handleInputChange(); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -95,19 +120,56 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="password" {...field} />
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="password"
+                            {...field}
+                            onChange={(e) => { field.onChange(e); handleInputChange(); }}
+                            className="pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? (
+                              <Icons.eyeOff className="h-4 w-4" />
+                            ) : (
+                              <Icons.eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
-                  {isLoading ? (
+                <Button type="submit" className="w-full" disabled={isAnyLoading}>
+                  {isSubmitLoading ? (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                   ) : ""}
                   Submit</Button>
               </form>
             </Form>
+
+            {/* Error Display */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+                  <Icons.alertCircle className="h-4 w-4" />
+                  <AlertDescription className="ml-2">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              </motion.div>
+            )}
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -124,10 +186,10 @@ export default function LoginPage() {
               variant="outline"
               type="button"
               className="w-full"
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-              disabled={isLoading}
+              onClick={handleGoogleSignIn}
+              disabled={isAnyLoading}
             >
-              {isLoading ? (
+              {isGoogleLoading ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Icons.google className="mr-2 h-4 w-4" />
@@ -137,13 +199,21 @@ export default function LoginPage() {
 
             <div className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/auth/signup" className="text-primary hover:underline">
+              <Link
+                href="/auth/signup"
+                className={`text-primary hover:underline ${isAnyLoading ? 'pointer-events-none opacity-50' : ''}`}
+                aria-disabled={isAnyLoading}
+              >
                 Sign up
               </Link>
             </div>
 
             <div className="text-center">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-primary">
+              <Link
+                href="/"
+                className={`text-sm text-muted-foreground hover:text-primary ${isAnyLoading ? 'pointer-events-none opacity-50' : ''}`}
+                aria-disabled={isAnyLoading}
+              >
                 ← Back to home
               </Link>
             </div>
