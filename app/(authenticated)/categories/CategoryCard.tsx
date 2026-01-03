@@ -41,8 +41,8 @@ const CategoryCard = ({ category, type, refetch, setSelectedCategory, setIsAddDi
 
     return (
         <div>
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="pb-3">
+            <Card className="hover:shadow-lg transition-shadow duration-300 py-3">
+                <CardHeader className="gap-0">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <div
@@ -93,7 +93,7 @@ const CategoryCard = ({ category, type, refetch, setSelectedCategory, setIsAddDi
                         </div>
                     </div>
                 </CardHeader>
-                {(type === "EXPENSE" && expenseLimit > 0) && (
+                {/* {(type === "EXPENSE" && expenseLimit > 0) && (
                     <CardContent className="pt-0">
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm text-muted-foreground">
@@ -108,7 +108,7 @@ const CategoryCard = ({ category, type, refetch, setSelectedCategory, setIsAddDi
                             </div>
                         </div>
                     </CardContent>
-                )}
+                )} */}
             </Card>
         </div>
     )

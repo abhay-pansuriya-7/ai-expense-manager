@@ -166,20 +166,20 @@ const CategoryForm = ({ category, onClose, type, refetch }: CategoryFormProps) =
           <Label htmlFor="icon">Icon</Label>
           <div className="space-y-3">
             {/* Current selected icon */}
-            <div className="flex items-center space-x-2 p-2 border rounded">
+            {/* <div className="flex items-center space-x-2 p-2 border rounded">
               <div style={{ color: IconColorOptions.find((c) => c.label === formData.color)?.value }}>{renderIcon(formData.icon, 24)}</div>
               <span className="text-sm font-medium">{formData.icon}</span>
-            </div>
+            </div> */}
 
             {/* Icon category filter */}
-            <ThemedSelect
+            {/* <ThemedSelect
               options={iconCategoryOptions}
               value={iconCategoryOptions.find((c) => c.value === selectedIconCategory) || null}
               onChange={(option: any) => setSelectedIconCategory(option?.value || "All")}
               placeholder="Filter by category"
               isSearchable={false}
               size="sm"
-            />
+            /> */}
 
             {/* Icon selector */}
             <ThemedSelect
@@ -227,7 +227,7 @@ const CategoryForm = ({ category, onClose, type, refetch }: CategoryFormProps) =
             ) : (
               <>
                 <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-                <Button type="submit">{category ? "Update" : "Create"} Category</Button>
+                <Button type="submit">{category ? "Update" : "Create"}</Button>
               </>
             )
           }

@@ -53,7 +53,7 @@ const CategoriesPage = () => {
                                 </div>
                                 <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <Button onClick={() => setSelectedCategory("")}><Plus className="h-4 w-4 mr-2" />Add Category</Button>
+                                        <Button onClick={() => setSelectedCategory("")}><Plus className="h-4 w-4" />Add Category</Button>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-md">
                                         <DialogHeader>

@@ -18,7 +18,7 @@ interface ThemeStore {
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
-      colorTheme: "blue", // Default theme is blue
+      colorTheme: "emerald", // Default theme is emerald
       theme: "light", // Default theme is light
 
       setTheme: (newTheme: "" | "dark" | "light") => {

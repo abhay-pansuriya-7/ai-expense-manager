@@ -16,19 +16,6 @@ import { z } from "zod"
 import { motion } from "framer-motion"
 import { redirect, RedirectType } from 'next/navigation'
 
-
-const currencies = [
-  { code: "USD", country: "United States" },
-  { code: "EUR", country: "European Union" },
-  { code: "GBP", country: "United Kingdom" },
-  { code: "JPY", country: "Japan" },
-  { code: "AUD", country: "Australia" },
-  { code: "CAD", country: "Canada" },
-  { code: "CHF", country: "Switzerland" },
-  { code: "CNY", country: "China" },
-  { code: "INR", country: "India" },
-] as const
-
 const FormSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters long" }),
   email: z
