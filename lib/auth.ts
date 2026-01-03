@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { CreateUserDefaultAccount } from "@/graphql/services/UserAccounts";
+import { getMe } from "@/graphql/services/User";
 import z from "zod";
 import bcrypt from "bcryptjs";
 
@@ -57,8 +58,28 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     session: async ({ session, token }: { session: any, token: any }) => {
-      if (session?.user) {
-        (session.user).id = token.sub!
+      if (session?.user && token.sub) {
+        // Get enriched user data from database
+        const userProfile = await getMe(token.sub);
+        
+        if (userProfile) {
+          session.user = {
+            id: userProfile.id,
+            email: userProfile.email,
+            name: userProfile.name,
+            image: userProfile.image,
+            theme: userProfile.theme,
+            colorTheme: userProfile.colorTheme,
+            isAdmin: userProfile.isAdmin,
+            createdAt: userProfile.createdAt,
+            userAccounts: userProfile.userAccounts,
+            categories: userProfile.categories,
+            stats: userProfile.stats,
+          };
+        } else {
+          // Fallback to basic user info if getMe fails
+          session.user.id = token.sub;
+        }
       }
       return session
     },

@@ -1,10 +1,38 @@
 const UserSchema = `
+
+
+  type SubAccount {
+    id: String
+    name: String
+    balance: Boolean
+    description: String
+    createdAt: String
+    updatedAt: String
+  }
+
+  type UserAccounts{
+    id: String
+    type: String
+    isActive: Boolean
+    subAccounts: [SubAccount]
+    createdAt: String
+    updatedAt: String
+  }
+
    type User {
     id: String
     name: String
     email: String
-    age: Int
-    isAdmin: Boolean
+    image: String
+    theme: String
+    colorTheme: String
+    userAccounts:UserAccounts
+  }
+
+  type UserResponse {
+    status: Boolean!
+    message: String!
+    data: User
   }
 
   type CommonResponse {
@@ -14,9 +42,11 @@ const UserSchema = `
 
 
   input UserInput {
-    fname: String!
-    email: String!
-    age: Int!
+    name: String
+    email: String
+    image: String
+    theme: String
+    colorTheme: String
   }
 
   input LoginInput {
@@ -24,13 +54,12 @@ const UserSchema = `
     password: String!
   }
 
-  type Query {
-    users: [User]!
-    user(id: String!): User
+  type Query {    
+    getUser: UserResponse
   }
 
   type Mutation {    
-    updateUser(id: String!, input: UserInput): User
+    updateUser(id: String!, input: UserInput): UserResponse
     deleteUser(id: String!): CommonResponse
   }
 `;

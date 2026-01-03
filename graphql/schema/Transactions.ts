@@ -20,8 +20,7 @@ input TransactionInput {
     description: String!
     date: String!
     type: TransactionType!
-    categoryId: String!    
-    isRecurring: Boolean!
+    categoryId: String!       
     recurringItemId: String!
     isRecurring: Boolean!
     attachments: [String]
